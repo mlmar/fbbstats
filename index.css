@@ -93,12 +93,17 @@ html, body, .main {
 .team-list header {
   border-bottom: .1rem solid black;
 }
+.team-list footer {
+  background: black;
+  color: white;
+  border-top: .1rem solid black;
+}
 
 .team-list .player {
   padding: var(--row-padding);
 }
 
-.team-list .player:nth-child(even) {
+.team-list .list .player:nth-child(odd) {
   background:  var(--gray);
 }
 

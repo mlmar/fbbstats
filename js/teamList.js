@@ -1,16 +1,21 @@
 // TEAM SELECTOR
 const teamList = ({ parent, id }) => {
   const $el = $$([
-    `<div id="${id}" class="team-list flex-col" tabindex="-1">`,
+    `<div id="${id}" class="team-list flex-col flex-fill" tabindex="-1">`,
       `<header class="player flex">
         <label class="flex flex-middle"> PLAYER </label>`,
         CONFIG.CATEGORIES_LABELS.map((cat) =>  `<label class="flex flex-middle"> ${cat} </label>`).join('\n'),
         `<button class="close-btn"></button>`,
       `</header>`,
+      `<div id="${id}list" class="list flex-col flex-fill"></div>`,
     `</div>`,
   ]);
 
-  const playersMap = new Map();
+  const $list = $el.find('#' + id + 'list');
+  let $footer = null;
+  let _averages = {};
+  let _percentiles = {};
+  const _playersMap = new Map();
 
   const getPercentileColors = (percentile, cat) => {
     let colors = ['red', 'orange', 'yellow', 'green'];
@@ -26,12 +31,42 @@ const teamList = ({ parent, id }) => {
     }
   }
 
+  const calculateTotals = () => {
+    _averages = {
+      Query: CONFIG.USER
+    }
+    _playersMap.forEach((player) => {
+      CONFIG.CATEGORIES.forEach((cat) => {
+        _averages[cat] = (_averages[cat] || 0) + player[cat];
+      });
+    });
+    CONFIG.CATEGORIES.forEach((cat) => {
+      _averages[cat] = toFixed(_averages[cat] / _playersMap.size, 2);
+    });
+    _percentiles = statsUtil.calculatePercentiles([_averages]);
+  }
+
+  const refreshFooter = () => {
+    if($footer) {
+      $footer.remove();
+    }
+    calculateTotals();
+    $footer = $$([
+      `<footer class="player flex">
+        <label class="flex flex-middle"> AVERAGES </label>`,
+        CONFIG.CATEGORIES.map((cat) =>  `<label class="flex flex-middle ${getPercentileColors(_percentiles[CONFIG.USER][cat], cat)}"> ${_averages[cat]} </label>`).join('\n'),
+        `<button class="close-btn"></button>`,
+      `</footer>`
+    ]);
+    $el.append($footer);
+  }
+
   const addPlayer = (id) => {
-    if(!playersMap.get(id)) {
+    if(!_playersMap.get(id)) {
       const playerData = statsUtil.getPlayer(id);
       const percentilesData = statsUtil.getPercentiles(id);
       if(playerData) {
-        playersMap.set(id, playerData);
+        _playersMap.set(id, playerData);
         const $player = $$([
           `<div id="${id}" class="player flex">
             <label class="flex flex-middle"> ${playerData.Player} </label>`,
@@ -45,27 +80,30 @@ const teamList = ({ parent, id }) => {
           `</div>`
         ]);
         $player.find('button').on('click', () => removePlayer(id));
-        $el.append($player);
+        $list.append($player);
+        refreshFooter();
         save();
       }
     }
   }
 
   const removePlayer = (id) => {
-    playersMap.delete(id);
-    $el.find('#' + id).remove();
+    _playersMap.delete(id);
+    $list.find('#' + id).remove();
+    refreshFooter();
     save();
   }
 
   const save = () => {
     const ids = [];
-    playersMap.forEach(({ QUERY }) => ids.push(QUERY));
+    _playersMap.forEach((player) => ids.push(player.Query));
     localStorage.setItem('playerIds', ids)
   }
 
   if(localStorage.getItem('playerIds')) {
     localStorage.getItem('playerIds').split(',').forEach(addPlayer);
   }
+  refreshFooter();
 
   $el.id = id;
   $el.addPlayer = addPlayer;

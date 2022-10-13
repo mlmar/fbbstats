@@ -5,15 +5,15 @@ const statsUtil = {
   players: {}
 }
 
-statsUtil.clean = (text) => text?.toLowerCase().trim().replace(' ','').replace('-','').replace("'",'').replace('.','');
+statsUtil.clean = (text) => text?.toLowerCase().trim().replace(' ','').replace('-','').replace("'",'').replace('.','').normalize("NFD").replace(/\p{Diacritic}/gu, "");
 
 statsUtil.fetchStats = async () => {
   try {
     let res = await fetch(CONFIG.DATA_PATH);
     res = await res.json();
-    statsUtil.stats = res;
+    statsUtil.stats = res.filter(player => player.G > CONFIG.MIN_GAMES);
     statsUtil.cleanStats();
-    statsUtil.calculatePercentiles();
+    statsUtil.percentiles = statsUtil.calculatePercentiles();
     return statsUtil.stats;
   } catch(e) {
     console.error(e);
@@ -40,19 +40,20 @@ statsUtil.cleanStats = () => {
   });
 }
 
-statsUtil.calculatePercentiles = () => {
-  statsUtil.percentiles = {}
+statsUtil.calculatePercentiles = (data) => {
+  let _data = data || [];
+  let percentiles = {}
   CONFIG.CATEGORIES.forEach((cat) => {
     const sorted = cat !== 'TOV' ? 
-      statsUtil.stats.slice(0).sort((a, b) => (a[cat] - b[cat])) :
-      statsUtil.stats.slice(0).sort((b, a) => (a[cat] - b[cat])).reverse() ;
+      [...statsUtil.stats, ..._data].sort((a, b) => (a[cat] - b[cat])) :
+      [...statsUtil.stats, ..._data].sort((b, a) => (a[cat] - b[cat])).reverse() ;
 
     sorted.forEach((player, i) => {
-      statsUtil.percentiles[player.Query] = (statsUtil.percentiles[player.Query] || {}) 
-      statsUtil.percentiles[player.Query][cat] = toFixed((i / statsUtil.stats.length) * 100, 2);
+      percentiles[player.Query] = (percentiles[player.Query] || {}) 
+      percentiles[player.Query][cat] = toFixed((i / statsUtil.stats.length) * 100, 2);
     });
   });
-  return statsUtil.percentiles;
+  return percentiles;
 }
 
 statsUtil.search = (name) => {
