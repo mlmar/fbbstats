@@ -5,7 +5,7 @@ const statsUtil = {
   players: {}
 }
 
-statsUtil.clean = (text) => text?.toLowerCase().trim().replace(' ','').replace('-','').replace("'",'').replace('.','').normalize("NFD").replace(/\p{Diacritic}/gu, "");
+statsUtil.clean = (text) => text?.toLowerCase().trim().replace(/\s/g, '').replace('-','').replace("'",'').replace('.','').normalize("NFD").replace(/\p{Diacritic}/gu, "");
 
 statsUtil.fetchStats = async () => {
   try {
