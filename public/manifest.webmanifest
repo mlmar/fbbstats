@@ -1,0 +1,9 @@
+{
+  "short_name": "fbbstats",
+  "name": "fbbstats",
+  "start_url": "https://mlmar.github.io/fbbstats/index.html",
+  "scope": "https://mlmar.github.io/fbbstats/index.html",
+  "display": "standalone",
+  "theme_color": "#212121",
+  "background_color": "#eaeaea"
+}
