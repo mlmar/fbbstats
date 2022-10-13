@@ -56,7 +56,12 @@ const teamList = ({ parent, id }) => {
     $footer = $$([
       `<footer class="player flex">
         <label class="flex flex-middle"> AVERAGES </label>`,
-        CONFIG.CATEGORIES.map((cat) =>  `<label class="flex flex-middle ${getPercentileColors(_percentiles[CONFIG.USER][cat], cat)}"> ${_averages[cat]} </label>`).join('\n'),
+        CONFIG.CATEGORIES.map((cat) =>  `<label class="flex flex-middle"> ${_averages[cat]} </label>`).join('\n'),
+        `<button class="close-btn"></button>`,
+      `</footer>`,
+      `<footer class="player flex percentiles">
+        <label class="flex flex-middle"></label>`,
+        CONFIG.CATEGORIES.map((cat) =>  `<label class="flex flex-middle ${getPercentileColors(_percentiles[CONFIG.USER][cat], cat)}"> ${_percentiles[CONFIG.USER][cat]} </label>`).join('\n'),
         `<button class="close-btn"></button>`,
       `</footer>`
     ]);
