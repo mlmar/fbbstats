@@ -1,3 +1,14 @@
+@import url(https://fonts.googleapis.com/css2?family=Rubik:wght@400;700;900&display=swap);
+
+:root {
+  --row-padding: .8rem .6rem;
+  --gray: rgb(223, 223, 223);
+}
+
+* {
+  font-family: Rubik !important;
+}
+
 html, body, .main {
   display: flex;
   width: 100%;
@@ -13,14 +24,117 @@ html, body, .main {
   flex-direction: column;
   flex: 1 1;
   position: relative;
+  padding: 2%;
 }
 
 /*** BEGIN FLEX ***/
-
 .flex, .flex-col { display: flex; }
 .flex-col { flex-direction: column; }
 .flex-fill { flex: 1 1 }
 .flex-middle { align-items: center; }
 .flex-center { justify-content: center; }
-
+.overflow-x { overflow-x: auto; }
 /*** END FLEX ***/
+
+/*** BEGIN COLORS ***/
+.red {
+  color: red;
+}
+.orange {
+  color: orange;
+}
+.yellow {
+  color: yellow;
+}
+.green {
+  color: lime;
+}
+/*** END COLORS ***/ 
+
+/*** BEGIN PLAYER SELECTOR ***/
+.player-selector {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.player-selector input {
+  padding: var(--row-padding);
+  outline: 1px solid black;
+  border: none;
+}
+
+.player-selector .dropdown {
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  max-height: 50vh;
+  overflow: auto;
+  outline: 1px solid black;
+}
+
+.player-selector .dropdown button {
+  padding: var(--row-padding);
+  border: none;
+  border-radius: none;
+}
+.player-selector .dropdown button:hover,
+.player-selector .dropdown button:focus  {
+  outline: none;
+  background: var(--gray);
+}
+.player-selector .dropdown button.selected {
+  background: var(--gray);
+}
+/*** END PLAYER SELECTOR ***/
+
+/*** BEGIN TEAM LIST ***/
+
+
+.team-list header {
+  border-bottom: .1rem solid black;
+}
+
+.team-list .player {
+  padding: var(--row-padding);
+}
+
+.team-list .player:nth-child(even) {
+  background:  var(--gray);
+}
+
+.team-list .percentiles {
+  background: black;
+}
+
+.team-list .player {
+  min-width: fit-content;
+}
+
+.team-list .player > *:first-child {
+  flex-basis: 20%;
+  min-width: 10rem;
+}
+
+.team-list .player > *:not(:first-child):not(:last-child) {
+  flex-basis: 10%;
+  min-width: 5rem;
+}
+
+.close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 1.2rem;
+  background: none;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  user-select: none;
+}
+.close-btn:hover, .close-btn:focus {
+  outline: none;
+  border: none;
+}
+/*** END TEAM LIST ***/
