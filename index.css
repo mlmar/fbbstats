@@ -83,7 +83,7 @@ label {
 .player-selector .dropdown button {
   padding: var(--row-padding);
   border: none;
-  border-radius: none;
+  outline: none;
 }
 .player-selector .dropdown button:hover,
 .player-selector .dropdown button:focus  {
