@@ -11,7 +11,7 @@ statsUtil.fetchStats = async () => {
   try {
     let res = await fetch(CONFIG.DATA_PATH);
     res = await res.json();
-    statsUtil.stats = res.stats;
+    statsUtil.stats = res;
     statsUtil.cleanStats();
     statsUtil.calculatePercentiles();
     return statsUtil.stats;
@@ -25,11 +25,11 @@ statsUtil.fetchStats = async () => {
 statsUtil.cleanStats = () => {
   statsUtil.averages = {};
   statsUtil.stats.forEach((player, i) => {
-    player.QUERY = statsUtil.clean(player.PLAYER);
-    statsUtil.players[player.QUERY] = player;
+    player.Query = statsUtil.clean(player.Player);
+    statsUtil.players[player.Query] = player;
 
     CONFIG.CATEGORIES.forEach((cat) => {
-      player[cat] = parseFloat(player[cat].replace('%',''));
+      player[cat] = parseFloat(player[cat]);
       statsUtil.averages[cat] = (statsUtil.averages[cat] || 0) + player[cat];
     })
   });
@@ -48,8 +48,8 @@ statsUtil.calculatePercentiles = () => {
       statsUtil.stats.slice(0).sort((b, a) => (a[cat] - b[cat])).reverse() ;
 
     sorted.forEach((player, i) => {
-      statsUtil.percentiles[player.QUERY] = (statsUtil.percentiles[player.QUERY] || {}) 
-      statsUtil.percentiles[player.QUERY][cat] = toFixed((i / statsUtil.stats.length) * 100, 2);
+      statsUtil.percentiles[player.Query] = (statsUtil.percentiles[player.Query] || {}) 
+      statsUtil.percentiles[player.Query][cat] = toFixed((i / statsUtil.stats.length) * 100, 2);
     });
   });
   return statsUtil.percentiles;
@@ -57,7 +57,7 @@ statsUtil.calculatePercentiles = () => {
 
 statsUtil.search = (name) => {
   const query = statsUtil.clean(name);
-  const results = statsUtil.stats?.filter(p => p.QUERY.includes(query));
+  const results = statsUtil.stats?.filter(p => p.Query.includes(query));
   return results;
 }
 

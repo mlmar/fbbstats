@@ -34,7 +34,7 @@ const teamList = ({ parent, id }) => {
         playersMap.set(id, playerData);
         const $player = $$([
           `<div id="${id}" class="player flex">
-            <label class="flex flex-middle"> ${playerData.PLAYER} </label>`,
+            <label class="flex flex-middle"> ${playerData.Player} </label>`,
             CONFIG.CATEGORIES.map((cat) =>  `<label class="flex flex-middle"> ${playerData[cat]} </label>`).join('\n'),
             `<button class="close-btn"> &#10006; </button>`,
           `</div>`,

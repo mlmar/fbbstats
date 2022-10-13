@@ -21,7 +21,7 @@ const playerSelector = ({ parent, id, onSelect }) => {
     $dropdown.empty();
     _searchResults.forEach((player, i) => {
       $dropdown.append($$([
-        `<button id="${player.QUERY}" class="flex" data-key="${i}"> ${player.PLAYER} </button>`
+        `<button id="${player.Query}" class="flex" data-key="${i}"> ${player.Player} </button>`
       ]));
     });
     if(_searchResults.length) {
@@ -91,7 +91,7 @@ const playerSelector = ({ parent, id, onSelect }) => {
   });
 
   const hover = () => {
-    $input.val( _searchResults[_index].PLAYER);
+    $input.val( _searchResults[_index].Player);
     const $player = $($dropdown.children()[_index]);
     $dropdown[0].scrollTo(0, $player[0].offsetTop + $player[0].clientHeight);
   }
