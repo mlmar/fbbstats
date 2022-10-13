@@ -43,7 +43,7 @@ const teamList = ({ parent, id }) => {
       });
     });
     CONFIG.CATEGORIES.forEach((cat) => {
-      _averages[cat] = toFixed(_averages[cat] / _playersMap.size, 2);
+      _averages[cat] = _palyersMap.size ? toFixed(_averages[cat] / _playersMap.size, 2) : 0;
     });
     _percentiles = statsUtil.calculatePercentiles([_averages]);
   }
