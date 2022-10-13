@@ -78,6 +78,7 @@ label {
   max-height: 50vh;
   overflow: auto;
   outline: 1px solid black;
+  background: var(--gray);
 }
 
 .player-selector .dropdown button {
