@@ -1,13 +1,13 @@
 // TEAM SELECTOR
 const teamList = ({ parent, id }) => {
   const $el = $$([
-    `<div id="${id}" class="team-list flex-col flex-fill" tabindex="-1">`,
+    `<div id="${id}" class="team-list flex-col flex-fill overflow-x" tabindex="-1">`,
       `<header class="player flex">
         <label class="flex flex-middle"> PLAYER </label>`,
         CONFIG.CATEGORIES_LABELS.map((cat) =>  `<label class="flex flex-middle"> ${cat} </label>`).join('\n'),
         `<button class="close-btn"></button>`,
       `</header>`,
-      `<div id="${id}list" class="list flex-col flex-fill"></div>`,
+      `<div id="${id}list" class="list flex-col flex-fill overflow-y"></div>`,
     `</div>`,
   ]);
 
@@ -18,16 +18,18 @@ const teamList = ({ parent, id }) => {
   const _playersMap = new Map();
 
   const getPercentileColors = (percentile, cat) => {
-    let colors = ['red', 'orange', 'yellow', 'green'];
+    let colors = ['red', 'orange', 'white', 'yellow', 'green'];
     colors = cat !== 'TOV' ? colors : colors.reverse();
-    if(percentile < 50) {
+    if(percentile < 40) {
       return colors[0];
-    } else if(percentile < 70){
+    } else if(percentile < 55){
       return colors[1];
-    } else if(percentile < 85){
+    } else if(percentile < 65){
       return colors[2];
-    } else {
+    } else if(percentile < 80) {
       return colors[3];
+    } else {
+      return colors[4];
     }
   }
 

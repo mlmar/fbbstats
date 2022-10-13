@@ -34,6 +34,7 @@ html, body, .main {
 .flex-middle { align-items: center; }
 .flex-center { justify-content: center; }
 .overflow-x { overflow-x: auto; }
+.overflow-y { overflow-y: auto; }
 /*** END FLEX ***/
 
 /*** BEGIN COLORS ***/
@@ -42,6 +43,9 @@ html, body, .main {
 }
 .orange {
   color: orange;
+}
+.white {
+  color: white;
 }
 .yellow {
   color: yellow;
@@ -96,7 +100,7 @@ html, body, .main {
 .team-list footer {
   background: black;
   color: white;
-  border-top: .1rem solid black;
+  border-top: .1rem solid white;
 }
 
 .team-list .player {
@@ -111,6 +115,7 @@ html, body, .main {
   background: black;
 }
 
+.team-list .list,
 .team-list .player {
   min-width: fit-content;
 }
