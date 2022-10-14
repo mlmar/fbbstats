@@ -5,6 +5,7 @@ let $playerSelector = null;
 let $teamList = null;
 
 $(document).ready(() => {
+  // verify();
   init();
 });
 
@@ -33,3 +34,5 @@ const handlePlayerSelect = (id) => {
 
 const handleTeamSelect = (id) => {
 }
+
+console.log(`%c what you looking for?`, 'background: black; color: lightgreen; font-weight: 600');

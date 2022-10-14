@@ -1,7 +1,13 @@
 // TEAM SELECTOR
 const teamList = ({ parent, id }) => {
   const $el = $$([
-    `<div id="${id}" class="team-list flex-col flex-fill overflow-x" tabindex="-1">`,
+    `<div id="${id}" class="team-list flex-col flex-fill overflow-x hide-ranks" tabindex="-1">`,
+      `<form id="${id}radioForm" class="flex flex-middle" tabindex="-1">
+        <input id="${id}radioPercentiles" type="radio" name="percentileRank" value="percentiles" checked/>
+        <label for="${id}radioPercentiles"> Percentiles </label>
+        <input id="${id}radioRanks" type="radio" name="percentileRank" value="ranks"/>
+        <label for="${id}radioRanks"> Ranks </label>
+      </form>`,
       `<header class="player flex">
         <label class="flex flex-middle"> PLAYER </label>`,
         CONFIG.CATEGORIES_LABELS.map((cat) =>  `<label class="flex flex-middle"> ${cat} </label>`).join('\n'),
@@ -11,11 +17,23 @@ const teamList = ({ parent, id }) => {
     `</div>`,
   ]);
 
+  const $radioForm = $el.find('#' + id + 'radioForm');
   const $list = $el.find('#' + id + 'list');
   let $footer = null;
+  const _playersMap = new Map();
   let _averages = {};
   let _percentiles = {};
-  const _playersMap = new Map();
+  let _ranks = {};
+
+  $radioForm.on('change', (event) => {
+    if(event.target.value === 'percentiles') {
+      $el.removeClass('hide-percentiles');
+      $el.addClass('hide-ranks');
+    } else {
+      $el.addClass('hide-percentiles');
+      $el.removeClass('hide-ranks');
+    }
+  });
 
   const getPercentileColors = (percentile, cat) => {
     let colors = ['red', 'orange', 'white', 'yellow', 'green'];
@@ -45,7 +63,9 @@ const teamList = ({ parent, id }) => {
     CONFIG.CATEGORIES.forEach((cat) => {
       _averages[cat] = _playersMap.size ? toFixed(_averages[cat] / _playersMap.size, 2) : 0;
     });
-    _percentiles = statsUtil.calculatePercentiles([_averages]);
+    let { percentiles, ranks } = statsUtil.getPercentilesAndRanks([_averages]);
+    _percentiles = percentiles;
+    _ranks = ranks;
   }
 
   const refreshFooter = () => {
@@ -59,9 +79,14 @@ const teamList = ({ parent, id }) => {
         CONFIG.CATEGORIES.map((cat) =>  `<label class="flex flex-middle"> ${_averages[cat]} </label>`).join('\n'),
         `<button class="close-btn"></button>`,
       `</footer>`,
-      `<footer class="player flex percentiles">
+      `<footer class="player percentiles flex">
         <label class="flex flex-middle"></label>`,
-        CONFIG.CATEGORIES.map((cat) =>  `<label class="flex flex-middle ${getPercentileColors(_percentiles[CONFIG.USER][cat], cat)}"> ${_percentiles[CONFIG.USER][cat]} </label>`).join('\n'),
+        CONFIG.CATEGORIES.map((cat) =>  `<label class="flex flex-middle ${getPercentileColors(_percentiles[CONFIG.USER][cat], cat)}"> ${_percentiles[CONFIG.USER][cat]}% </label>`).join('\n'),
+        `<button class="close-btn"></button>`,
+      `</footer>`,
+      `<footer class="player ranks flex">
+        <label class="flex flex-middle"></label>`,
+        CONFIG.CATEGORIES.map((cat) =>  `<label class="flex flex-middle ${getPercentileColors(_percentiles[CONFIG.USER][cat], cat)}"> ${_ranks[CONFIG.USER][cat]} </label>`).join('\n'),
         `<button class="close-btn"></button>`,
       `</footer>`
     ]);
@@ -72,10 +97,11 @@ const teamList = ({ parent, id }) => {
     if(!_playersMap.get(id)) {
       const playerData = statsUtil.getPlayer(id);
       const percentilesData = statsUtil.getPercentiles(id);
+      const ranksData = statsUtil.getRanks(id);
       if(playerData) {
         _playersMap.set(id, playerData);
         const $player = $$([
-          `<div id="${id}" class="player flex">
+          `<div id="${id}" class="player stats flex">
             <label class="flex flex-middle"> ${playerData.Player} </label>`,
             CONFIG.CATEGORIES.map((cat) =>  `<label class="flex flex-middle"> ${playerData[cat]} </label>`).join('\n'),
             `<button class="close-btn"> &#10006; </button>`,
@@ -83,6 +109,11 @@ const teamList = ({ parent, id }) => {
           `<div id="${id}" class="percentiles player flex">
             <label class="flex flex-middle"></label>`,
             CONFIG.CATEGORIES.map((cat) =>  `<label class="flex flex-middle ${getPercentileColors(percentilesData[cat], cat)}"> ${percentilesData[cat]}% </label>`).join('\n'),
+            `<button class="close-btn"></button>`,
+          `</div>`,
+          `<div id="${id}" class="ranks player flex">
+            <label class="flex flex-middle"></label>`,
+            CONFIG.CATEGORIES.map((cat) =>  `<label class="flex flex-middle ${getPercentileColors(percentilesData[cat], cat)}"> ${ranksData[cat]} </label>`).join('\n'),
             `<button class="close-btn"></button>`,
           `</div>`
         ]);

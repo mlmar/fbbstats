@@ -7,6 +7,8 @@
 
 * {
   font-family: Rubik !important;
+  margin: 0;
+  padding: 0;
 }
 
 html, body, .main {
@@ -14,8 +16,6 @@ html, body, .main {
   width: 100%;
   height: 100%;
   flex-direction: column;
-  padding: 0;
-  margin: 0;
   box-sizing: border-box;
 }
 
@@ -85,6 +85,9 @@ label {
   padding: var(--row-padding);
   border: none;
   outline: none;
+  appearance: none;
+  background: rgb(233, 233, 233);
+  color: black;
 }
 .player-selector .dropdown button:hover,
 .player-selector .dropdown button:focus  {
@@ -97,7 +100,19 @@ label {
 /*** END PLAYER SELECTOR ***/
 
 /*** BEGIN TEAM LIST ***/
+.team-list.hide-percentiles .percentiles {
+  display: none !important;
+}
+.team-list.hide-ranks .ranks {
+  display: none !important;
+}
 
+.team-list form input {
+  margin-right: .3rem;
+}
+.team-list form label {
+  margin-right: 1rem;
+}
 
 .team-list header {
   border-bottom: .1rem solid black;
@@ -110,11 +125,11 @@ label {
   padding: var(--row-padding);
 }
 
-.team-list .list .player:nth-child(odd) {
+.team-list .list .player.stats {
   background:  var(--gray);
 }
 
-.team-list .percentiles {
+.team-list .percentiles, .ranks {
   background: black;
 }
 

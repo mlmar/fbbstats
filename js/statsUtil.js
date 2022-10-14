@@ -2,6 +2,7 @@ const statsUtil = {
   stats: null,
   averages: {},
   percentiles: {},
+  ranks: {},
   players: {}
 }
 
@@ -13,7 +14,9 @@ statsUtil.fetchStats = async () => {
     res = await res.json();
     statsUtil.stats = res.filter(player => player.G > CONFIG.MIN_GAMES);
     statsUtil.cleanStats();
-    statsUtil.percentiles = statsUtil.calculatePercentiles();
+    const { percentiles, ranks } = statsUtil.getPercentilesAndRanks();
+    statsUtil.percentiles = percentiles;
+    statsUtil.ranks = ranks;
     return statsUtil.stats;
   } catch(e) {
     console.error(e);
@@ -40,9 +43,10 @@ statsUtil.cleanStats = () => {
   });
 }
 
-statsUtil.calculatePercentiles = (data) => {
+statsUtil.getPercentilesAndRanks = (data) => {
   let _data = data || [];
-  let percentiles = {}
+  let percentiles = {};
+  let ranks = {};
   CONFIG.CATEGORIES.forEach((cat) => {
     const sorted = cat !== 'TOV' ? 
       [...statsUtil.stats, ..._data].sort((a, b) => (a[cat] - b[cat])) :
@@ -51,9 +55,11 @@ statsUtil.calculatePercentiles = (data) => {
     sorted.forEach((player, i) => {
       percentiles[player.Query] = (percentiles[player.Query] || {}) 
       percentiles[player.Query][cat] = toFixed((i / statsUtil.stats.length) * 100, 2);
+      ranks[player.Query] = (ranks[player.Query] || {});
+      ranks[player.Query][cat] = statsUtil.stats.length - i;
     });
   });
-  return percentiles;
+  return { percentiles, ranks };
 }
 
 statsUtil.search = (name) => {
@@ -64,6 +70,7 @@ statsUtil.search = (name) => {
 
 statsUtil.getPlayer = (name) => statsUtil.players[statsUtil.clean(name)];
 statsUtil.getPercentiles = (name) => statsUtil.percentiles[statsUtil.clean(name)];
+statsUtil.getRanks = (name) => statsUtil.ranks[statsUtil.clean(name)];
 
 function toFixed(num, fixed) {
   var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
